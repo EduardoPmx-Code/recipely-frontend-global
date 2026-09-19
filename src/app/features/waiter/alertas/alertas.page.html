@@ -1,0 +1,88 @@
+<ion-header>
+  <ion-toolbar color="danger">
+    <ion-title>
+      Alertas
+      @if (peticiones.length > 0) {
+        <ion-badge color="light" style="margin-left:8px;">{{ peticiones.length }}</ion-badge>
+      }
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="loadPeticiones($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- ── Notificaciones en tiempo real (historial de sesión) ── -->
+  @let notifications = (notifStore.notifications$ | async) ?? [];
+  @if (notifications.length > 0) {
+    <div style="padding: 12px 16px 4px; font-size: 12px; font-weight: 600; color: var(--ion-color-medium); text-transform: uppercase; letter-spacing: 0.5px;">
+      Notificaciones recibidas ({{ notifications.length }})
+    </div>
+    @for (n of notifications; track n.id) {
+      <ion-item lines="full" [style.opacity]="n.read ? '0.65' : '1'">
+        <ion-icon
+          slot="start"
+          [name]="getNotifIcon(n.type)"
+          [color]="getNotifColor(n.type)"
+          style="font-size: 22px;"
+        ></ion-icon>
+        <ion-label>
+          <h3 style="font-weight: 600;">{{ n.title }}</h3>
+          <p>{{ n.body }}</p>
+          <p style="font-size: 11px; color: var(--ion-color-medium);">{{ getTimeAgo(n.timestamp) }}</p>
+        </ion-label>
+        @if (!n.read) {
+          <ion-badge slot="end" color="danger">Nuevo</ion-badge>
+        }
+      </ion-item>
+    }
+  }
+
+  <!-- ── Peticiones de mesa (requieren acción) ── -->
+  <div style="padding: 12px 16px 4px; font-size: 12px; font-weight: 600; color: var(--ion-color-medium); text-transform: uppercase; letter-spacing: 0.5px;">
+    Peticiones pendientes
+  </div>
+
+  @if (isLoading) {
+    <div style="padding: 24px; text-align: center; color: var(--ion-color-medium);">
+      Cargando alertas...
+    </div>
+  } @else if (peticiones.length === 0) {
+    <div style="padding: 32px 24px; text-align: center; color: var(--ion-color-medium);">
+      <ion-icon name="checkmark-circle-outline" style="font-size: 40px; display:block; margin: 0 auto 8px;"></ion-icon>
+      <p>No hay peticiones pendientes</p>
+    </div>
+  } @else {
+    @for (p of peticiones; track p.uuid) {
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>
+            <ion-chip [color]="getTipoColor(p.tipo)">
+              <ion-icon [name]="getTipoIcon(p.tipo)" slot="start"></ion-icon>
+              <ion-label>{{ getTipoLabel(p.tipo) }}</ion-label>
+            </ion-chip>
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <p style="color: var(--ion-color-medium); font-size: 13px; margin-bottom: 8px;">
+            Mesa: {{ p.boardUuid }} · {{ getTimeAgo(p.createdAt) }}
+          </p>
+          @if (p.mensaje) {
+            <p style="font-style: italic; margin-bottom: 12px;">"{{ p.mensaje }}"</p>
+          }
+          <ion-button
+            expand="block"
+            fill="outline"
+            color="success"
+            (click)="resolve(p)"
+          >
+            <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
+            Marcar como Atendida
+          </ion-button>
+        </ion-card-content>
+      </ion-card>
+    }
+  }
+</ion-content>

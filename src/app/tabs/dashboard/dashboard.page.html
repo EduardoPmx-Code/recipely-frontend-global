@@ -1,0 +1,137 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Dashboard</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="logout()" title="Cerrar sesión">
+        <ion-icon slot="icon-only" name="log-out-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  @if (isLoading) {
+    <div class="loading-state">
+      <ion-icon name="receipt-outline" class="loading-icon"></ion-icon>
+      <p>Cargando métricas...</p>
+    </div>
+  }
+
+  @if (!isLoading && dashboard) {
+    <div class="dashboard-wrapper">
+      <p class="section-label">Resumen del día</p>
+
+      <ion-grid class="metrics-grid">
+        <ion-row>
+          <!-- Sesiones activas → navega a /tabs/sesiones -->
+          <ion-col size="6">
+            <ion-card class="metric-card clickable" (click)="router.navigate(['/tabs/sesiones'])">
+              <ion-card-content>
+                <div class="metric-icon sessions">
+                  <ion-icon name="people-outline"></ion-icon>
+                </div>
+                <div class="metric-value">{{ dashboard.activeSessions }}</div>
+                <div class="metric-label">Sesiones activas</div>
+                <ion-note class="nav-hint">Ver mesas <ion-icon name="arrow-forward-outline"></ion-icon></ion-note>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+
+          <!-- Pedidos pendientes → navega a /tabs/pedidos -->
+          <ion-col size="6">
+            <ion-card class="metric-card clickable" [class.has-alert]="dashboard.pendingOrders > 0" (click)="router.navigate(['/tabs/pedidos'], { queryParams: { filter: 'pending' } })">
+              <ion-card-content>
+                <div class="metric-icon pending">
+                  <ion-icon name="time-outline"></ion-icon>
+                </div>
+                <div class="metric-value">
+                  {{ dashboard.pendingOrders }}
+                  @if (dashboard.pendingOrders > 0) {
+                    <ion-badge color="danger" class="alert-badge">!</ion-badge>
+                  }
+                </div>
+                <div class="metric-label">Pedidos pendientes</div>
+                <ion-note class="nav-hint">Ver pedidos <ion-icon name="arrow-forward-outline"></ion-icon></ion-note>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+
+          <!-- Pedidos hoy -->
+          <ion-col size="6">
+            <ion-card class="metric-card clickable" (click)="router.navigate(['/tabs/pedidos'])">
+              <ion-card-content>
+                <div class="metric-icon orders">
+                  <ion-icon name="receipt-outline"></ion-icon>
+                </div>
+                <div class="metric-value">{{ dashboard.totalOrdersToday }}</div>
+                <div class="metric-label">Pedidos hoy</div>
+                <ion-note class="nav-hint">Ver pedidos <ion-icon name="arrow-forward-outline"></ion-icon></ion-note>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+
+          <!-- Ingresos del día -->
+          <ion-col size="6">
+            <ion-card class="metric-card">
+              <ion-card-content>
+                <div class="metric-icon revenue">
+                  <ion-icon name="cash-outline"></ion-icon>
+                </div>
+                <div class="metric-value revenue-value">
+                  {{ dashboard.revenueToday | currency:'MXN':'symbol':'1.2-2' }}
+                </div>
+                <div class="metric-label">Ingresos del día</div>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+
+      <p class="section-label">Configuración</p>
+
+      <ion-grid class="metrics-grid">
+        <ion-row>
+          <!-- Mesas configuradas → navega a /tabs/mesas -->
+          <ion-col size="6">
+            <ion-card class="metric-card clickable" (click)="router.navigate(['/tabs/mesas'])">
+              <ion-card-content>
+                <div class="metric-icon boards">
+                  <ion-icon name="grid-outline"></ion-icon>
+                </div>
+                <div class="metric-value">{{ dashboard.totalBoards }}</div>
+                <div class="metric-label">Mesas / Boards</div>
+                <ion-note class="nav-hint">Gestionar mesas <ion-icon name="arrow-forward-outline"></ion-icon></ion-note>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+
+          <!-- Productos activos → navega a /tabs/productos -->
+          <ion-col size="6">
+            <ion-card class="metric-card clickable" (click)="router.navigate(['/tabs/productos'])">
+              <ion-card-content>
+                <div class="metric-icon products">
+                  <ion-icon name="cube-outline"></ion-icon>
+                </div>
+                <div class="metric-value">{{ dashboard.totalProducts }}</div>
+                <div class="metric-label">Productos activos</div>
+                <ion-note class="nav-hint">Ver menú <ion-icon name="arrow-forward-outline"></ion-icon></ion-note>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+  }
+
+  @if (!isLoading && !dashboard) {
+    <div class="empty-state">
+      <ion-icon name="receipt-outline"></ion-icon>
+      <p>No se pudieron cargar los datos</p>
+      <ion-button fill="outline" (click)="load()">Reintentar</ion-button>
+    </div>
+  }
+</ion-content>

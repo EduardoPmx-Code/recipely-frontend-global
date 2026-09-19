@@ -1,0 +1,24 @@
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  color: var(--ion-color-medium);
+
+  ion-icon {
+    font-size: 72px;
+    margin-bottom: 16px;
+  }
+
+  p {
+    text-align: center;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+}
+
+.price {
+  font-weight: 600;
+  color: var(--ion-color-primary) !important;
+}

@@ -1,0 +1,51 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Productos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <div style="padding: 12px 16px 0;">
+    <ion-button (click)="syncMenuToRag()" [disabled]="isSyncing" color="secondary" expand="block">
+      <ion-icon name="cloud-upload-outline" slot="start"></ion-icon>
+      {{ isSyncing ? 'Sincronizando...' : 'Sincronizar Menú con RAG' }}
+    </ion-button>
+  </div>
+
+  @if (products.length === 0) {
+    <div class="empty-state">
+      <ion-icon name="fast-food-outline"></ion-icon>
+      <p>No hay productos.<br />Agrega uno con el botón +</p>
+    </div>
+  } @else {
+    <ion-list>
+      @for (product of products; track product.uuid) {
+        <ion-item>
+          <ion-label>
+            <h2>{{ product.name }}</h2>
+            <p>{{ product.category }}</p>
+            <p class="price">{{ product.price | currency:'MXN':'symbol':'1.2-2' }}</p>
+          </ion-label>
+          <ion-buttons slot="end">
+            <ion-button color="primary" fill="clear" (click)="openEditModal(product)">
+              <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+            </ion-button>
+            <ion-button color="danger" fill="clear" (click)="confirmDelete(product)">
+              <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-item>
+      }
+    </ion-list>
+  }
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button (click)="openCreateModal()">
+      <ion-icon name="add-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

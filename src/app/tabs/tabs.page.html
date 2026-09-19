@@ -1,0 +1,101 @@
+<ion-tabs>
+  <ion-tab-bar slot="bottom">
+    <!-- Waiter Tabs - Only for WAITER role -->
+    @if (isWaiter() && canAccess('tables.read', 'assigned')) {
+      <ion-tab-button tab="waiter-mesas" href="/tabs/waiter-mesas">
+        <ion-icon name="grid-outline"></ion-icon>
+        <ion-label>Mesas</ion-label>
+      </ion-tab-button>
+    }
+    @if (isWaiter() && canAccess('orders.read', 'assigned')) {
+      <ion-tab-button tab="waiter-pedidos" href="/tabs/waiter-pedidos">
+        <ion-icon name="receipt-outline"></ion-icon>
+        <ion-label>Pedidos</ion-label>
+      </ion-tab-button>
+    }
+    @if (isWaiter() && canAccessWaiterNotifications()) {
+      <ion-tab-button tab="waiter-alertas" href="/tabs/waiter-alertas">
+        <ion-icon name="notifications-outline"></ion-icon>
+        @let waiterNotificationCount = (waiterNotifications.unreadCount$ | async) ?? 0;
+        @if (waiterNotificationCount > 0) {
+          <ion-badge color="danger">{{ waiterNotificationCount }}</ion-badge>
+        }
+        <ion-label>Alertas</ion-label>
+      </ion-tab-button>
+    }
+    @if (isWaiter() && canAccess('tables.read', 'assigned')) {
+      <ion-tab-button tab="waiter-perfil" href="/tabs/waiter-perfil">
+        <ion-icon name="person-outline"></ion-icon>
+        <ion-label>Perfil</ion-label>
+      </ion-tab-button>
+    }
+    
+    <!-- Admin/Manager Tabs -->
+    @if (canAccess('dashboard.read')) {
+      <ion-tab-button tab="dashboard" href="/tabs/dashboard">
+        <ion-icon name="stats-chart-outline"></ion-icon>
+        <ion-label>Dashboard</ion-label>
+      </ion-tab-button>
+    }
+    @if (canAccess('sessions.read')) {
+      <ion-tab-button tab="sesiones" href="/tabs/sesiones">
+        <ion-icon name="people-outline"></ion-icon>
+        <ion-label>Sesiones</ion-label>
+      </ion-tab-button>
+    }
+    @if (isManagementUser() && !isKitchen() && canAccess('orders.read')) {
+      <ion-tab-button tab="pedidos" href="/tabs/pedidos">
+        <ion-icon name="receipt-outline"></ion-icon>
+        <ion-label>Pedidos</ion-label>
+      </ion-tab-button>
+    }
+    @if (canAccess('tables.manage')) {
+      <ion-tab-button tab="mesas" href="/tabs/mesas">
+        <ion-icon name="grid-outline"></ion-icon>
+        <ion-label>Mesas</ion-label>
+      </ion-tab-button>
+    }
+    @if (canAccess('qrs.manage')) {
+      <ion-tab-button tab="qrs" href="/tabs/qrs">
+        <ion-icon name="qr-code-outline"></ion-icon>
+        <ion-label>QRs</ion-label>
+      </ion-tab-button>
+    }
+    @if (canAccess('menu.manage')) {
+      <ion-tab-button tab="productos" href="/tabs/productos">
+        <ion-icon name="fast-food-outline"></ion-icon>
+        <ion-label>Menú</ion-label>
+      </ion-tab-button>
+    }
+    @if (canAccess('staff.manage')) {
+      <ion-tab-button tab="meseros" href="/tabs/meseros">
+        <ion-icon name="person-outline"></ion-icon>
+        <ion-label>Staff</ion-label>
+      </ion-tab-button>
+    }
+    
+    <!-- Kitchen Tabs - Only for KITCHEN role -->
+    @if (isKitchen() && canAccess('kitchen.queue.read')) {
+      <ion-tab-button tab="kitchen-orders" href="/tabs/kitchen-orders">
+        <ion-icon name="restaurant-outline"></ion-icon>
+        <ion-label>Cocina</ion-label>
+      </ion-tab-button>
+    }
+    @if (isKitchen() && canAccess('kitchen.queue.read')) {
+      <ion-tab-button tab="kitchen-notifications" href="/tabs/kitchen-notifications">
+        <ion-icon name="notifications-outline"></ion-icon>
+        @let kitchenNotificationCount = (kitchenNotifications.unreadCount$ | async) ?? 0;
+        @if (kitchenNotificationCount > 0) {
+          <ion-badge color="danger">{{ kitchenNotificationCount }}</ion-badge>
+        }
+        <ion-label>Alertas</ion-label>
+      </ion-tab-button>
+    }
+    @if (isKitchen() && canAccess('profile.read')) {
+      <ion-tab-button tab="kitchen-profile" href="/tabs/kitchen-profile">
+        <ion-icon name="person-outline"></ion-icon>
+        <ion-label>Perfil</ion-label>
+      </ion-tab-button>
+    }
+  </ion-tab-bar>
+</ion-tabs>

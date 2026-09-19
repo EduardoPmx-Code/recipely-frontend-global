@@ -1,0 +1,139 @@
+.segment-filter {
+  margin: 8px;
+  --background: var(--ion-color-light);
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+  color: var(--ion-color-medium);
+
+  ion-icon {
+    font-size: 72px;
+    margin-bottom: 16px;
+  }
+
+  p {
+    text-align: center;
+    font-size: 16px;
+  }
+}
+
+.tables-container {
+  padding: 8px;
+}
+
+ion-card {
+  margin: 8px 0;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-left: 4px solid var(--ion-color-medium);
+
+  &.active-table {
+    border-left: 4px solid var(--ion-color-success);
+  }
+}
+
+.table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.table-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .table-icon {
+    font-size: 20px;
+    color: var(--ion-color-primary);
+  }
+
+  ion-card-title {
+    font-size: 18px;
+    font-weight: 600;
+    text-transform: capitalize;
+  }
+}
+
+.status-chip {
+  font-size: 12px;
+  height: 26px;
+}
+
+.active-session {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--ion-color-light-shade);
+  margin-bottom: 8px;
+
+  .session-info {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--ion-color-medium);
+    font-size: 13px;
+
+    ion-icon {
+      font-size: 16px;
+    }
+  }
+}
+
+.history-section {
+  margin-top: 4px;
+}
+
+.history-toggle {
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 6px 0;
+  color: var(--ion-color-medium);
+  font-size: 13px;
+  cursor: pointer;
+
+  ion-icon {
+    font-size: 16px;
+    transition: transform 0.2s;
+
+    &.rotated {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+.history-list {
+  background: var(--ion-color-light);
+  border-radius: 8px;
+  margin-top: 4px;
+}
+
+.history-item {
+  --min-height: 40px;
+  --padding-start: 8px;
+  --padding-end: 8px;
+  font-size: 13px;
+
+  ion-note {
+    font-size: 12px;
+    margin-right: 6px;
+  }
+
+  ion-badge {
+    font-size: 11px;
+  }
+}

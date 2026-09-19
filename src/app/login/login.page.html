@@ -1,0 +1,56 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Restaurante Global</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="login-wrapper">
+    <div class="login-logo">
+      <div class="logo-icon">🍽️</div>
+      <h2>Restaurante Global</h2>
+      <p>Panel de Administración</p>
+    </div>
+
+    <ion-item>
+      <ion-input
+        label="Correo electrónico"
+        labelPlacement="floating"
+        type="email"
+        [(ngModel)]="email"
+        autocomplete="email"
+        placeholder="admin@restaurante.com"
+      ></ion-input>
+    </ion-item>
+
+    <ion-item class="ion-margin-top">
+      <ion-input
+        label="Contraseña"
+        labelPlacement="floating"
+        type="password"
+        [(ngModel)]="password"
+        autocomplete="current-password"
+      ></ion-input>
+    </ion-item>
+
+    @if (errorMessage) {
+      <ion-note color="danger" class="error-note">
+        {{ errorMessage }}
+      </ion-note>
+    }
+
+    <ion-button
+      expand="block"
+      class="ion-margin-top"
+      (click)="onLogin()"
+      [disabled]="isLoading"
+    >
+      @if (isLoading) {
+        <ion-spinner name="crescent" slot="start"></ion-spinner>
+        Ingresando...
+      } @else {
+        Ingresar
+      }
+    </ion-button>
+  </div>
+</ion-content>

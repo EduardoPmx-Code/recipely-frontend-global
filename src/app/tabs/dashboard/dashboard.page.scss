@@ -1,0 +1,140 @@
+.dashboard-wrapper {
+  padding: 8px 0 24px;
+}
+
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--ion-color-medium);
+  padding: 16px 20px 4px;
+  margin: 0;
+}
+
+.metrics-grid {
+  padding: 4px 8px;
+}
+
+.metric-card {
+  margin: 4px;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  ion-card-content {
+    text-align: center;
+    padding: 16px 8px 12px;
+  }
+
+  &.clickable {
+    cursor: pointer;
+    &:active {
+      transform: scale(0.97);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  &.has-alert {
+    border-left: 4px solid var(--ion-color-danger);
+  }
+}
+
+.metric-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 10px;
+
+  ion-icon {
+    font-size: 26px;
+    color: white;
+  }
+
+  &.sessions  { background: var(--ion-color-primary); }
+  &.pending   { background: var(--ion-color-warning); }
+  &.orders    { background: var(--ion-color-success); }
+  &.revenue   { background: var(--ion-color-tertiary); }
+  &.boards    { background: #5856d6; }
+  &.products  { background: #ff6b35; }
+}
+
+.metric-value {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--ion-text-color);
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.revenue-value {
+  font-size: 17px;
+}
+
+.metric-label {
+  font-size: 11px;
+  color: var(--ion-color-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.nav-hint {
+  font-size: 10px;
+  color: var(--ion-color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+
+  ion-icon {
+    font-size: 11px;
+  }
+}
+
+.alert-badge {
+  font-size: 10px;
+  height: 16px;
+  min-width: 16px;
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 250px;
+  color: var(--ion-color-medium);
+  gap: 12px;
+
+  .loading-icon {
+    font-size: 48px;
+    opacity: 0.3;
+  }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 250px;
+  gap: 16px;
+  color: var(--ion-color-medium);
+
+  ion-icon {
+    font-size: 56px;
+    opacity: 0.3;
+  }
+
+  p {
+    margin: 0;
+    font-size: 15px;
+  }
+}

@@ -1,0 +1,87 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title>Dashboard</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="loadDashboard($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  @if (isLoading) {
+    <ion-grid class="dashboard-grid">
+      <ion-row>
+        @for (item of [1,2,3,4,5,6]; track item) {
+          <ion-col size="6">
+            <ion-card>
+              <ion-card-content>
+                <ion-skeleton-text animated style="height:40px;width:60%"></ion-skeleton-text>
+                <ion-skeleton-text animated style="height:16px;width:80%"></ion-skeleton-text>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        }
+      </ion-row>
+    </ion-grid>
+  } @else if (dashboard) {
+    <ion-grid class="dashboard-grid">
+      <ion-row>
+        <ion-col size="6">
+          <ion-card class="stat-card">
+            <ion-card-content>
+              <ion-icon name="people-outline" color="primary" class="stat-icon"></ion-icon>
+              <div class="stat-value">{{ dashboard.activeSessions }}</div>
+              <div class="stat-label">Sesiones activas</div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+        <ion-col size="6">
+          <ion-card class="stat-card">
+            <ion-card-content>
+              <ion-icon name="receipt-outline" color="success" class="stat-icon"></ion-icon>
+              <div class="stat-value">{{ dashboard.totalOrdersToday }}</div>
+              <div class="stat-label">Pedidos hoy</div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+        <ion-col size="6">
+          <ion-card class="stat-card">
+            <ion-card-content>
+              <ion-icon name="time-outline" color="warning" class="stat-icon"></ion-icon>
+              <div class="stat-value">{{ dashboard.pendingOrders }}</div>
+              <div class="stat-label">Pendientes</div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+        <ion-col size="6">
+          <ion-card class="stat-card">
+            <ion-card-content>
+              <ion-icon name="cash-outline" color="tertiary" class="stat-icon"></ion-icon>
+              <div class="stat-value">${{ dashboard.revenueToday | number:'1.2-2' }}</div>
+              <div class="stat-label">Ingresos hoy</div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+        <ion-col size="6">
+          <ion-card class="stat-card">
+            <ion-card-content>
+              <ion-icon name="grid-outline" color="medium" class="stat-icon"></ion-icon>
+              <div class="stat-value">{{ dashboard.totalBoards }}</div>
+              <div class="stat-label">Mesas totales</div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+        <ion-col size="6">
+          <ion-card class="stat-card">
+            <ion-card-content>
+              <ion-icon name="fast-food-outline" color="danger" class="stat-icon"></ion-icon>
+              <div class="stat-value">{{ dashboard.totalProducts }}</div>
+              <div class="stat-label">Productos activos</div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  }
+</ion-content>

@@ -1,0 +1,47 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Personal</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="loadStaff($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  @if (staff.length === 0) {
+    <div class="empty-state">
+      <ion-icon name="person-outline" class="empty-icon"></ion-icon>
+      <p>No hay personal registrado.</p>
+      <p>Agrega el primer mesero con el botón +</p>
+    </div>
+  } @else {
+    <ion-list>
+      @for (member of staff; track member.uuid) {
+        <ion-item>
+          <ion-label>
+            <h2>{{ member.name }}</h2>
+            <p>{{ member.email }}</p>
+          </ion-label>
+          <ion-badge slot="end" [color]="roleColors[member.role]">
+            {{ roleLabels[member.role] }}
+          </ion-badge>
+          <ion-buttons slot="end">
+            <ion-button fill="clear" (click)="openEditModal(member)">
+              <ion-icon name="create-outline"></ion-icon>
+            </ion-button>
+            <ion-button fill="clear" color="danger" (click)="confirmDeactivate(member)">
+              <ion-icon name="trash-outline"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-item>
+      }
+    </ion-list>
+  }
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button color="primary" (click)="openCreateModal()">
+      <ion-icon name="add-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

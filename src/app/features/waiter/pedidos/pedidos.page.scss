@@ -1,0 +1,72 @@
+.order-card {
+  margin: 12px;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.order-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.order-id {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+ion-badge {
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.items-list {
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  margin-bottom: 8px;
+}
+
+.order-item {
+  --padding-start: 0;
+  --inner-padding-end: 0;
+
+  ion-label {
+    font-size: 0.9rem;
+  }
+}
+
+.item-qty {
+  font-weight: 700;
+  color: var(--ion-color-primary);
+  margin-right: 4px;
+}
+
+.action-buttons {
+  margin-top: 12px;
+
+  ion-button {
+    --border-radius: 8px;
+    font-weight: 600;
+  }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+  color: var(--ion-color-medium);
+
+  .empty-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    font-size: 1rem;
+  }
+}

@@ -1,0 +1,138 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title>Mesas & QR Codes</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-center">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Cargando mesas...</p>
+  </div>
+
+  <ng-container *ngIf="!loading">
+
+    <!-- QR del Local -->
+    <ion-card class="local-card" *ngIf="local">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="restaurant-outline"></ion-icon>
+          QR del Restaurante
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content class="local-qr-content">
+        <p class="local-name">{{ local.name }}</p>
+        <img *ngIf="localQrDataUrl" [src]="localQrDataUrl" alt="QR Local" class="qr-img-large" />
+        <p class="qr-hint">Escaneo 1 — Identifica el restaurante</p>
+        <ion-button fill="outline" size="small" (click)="downloadQr(local.name, localQrDataUrl)">
+          <ion-icon slot="start" name="download-outline"></ion-icon>
+          Descargar
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Mesas -->
+    <div class="section-header">
+      <h2>Mesas ({{ boards.length }})</h2>
+      <ion-button size="small" (click)="openNewBoardModal()">
+        <ion-icon slot="start" name="add-outline"></ion-icon>
+        Nueva Mesa
+      </ion-button>
+    </div>
+
+    <p *ngIf="boards.length === 0" class="empty-msg">
+      No hay mesas configuradas. Crea la primera mesa para generar su QR.
+    </p>
+
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12" size-md="6" size-lg="4" *ngFor="let board of boards">
+          <ion-card class="board-card">
+            <ion-card-header>
+              <ion-card-title>{{ board.descripcion }}</ion-card-title>
+              <ion-badge color="medium">Mesa {{ board.slot }}</ion-badge>
+            </ion-card-header>
+            <ion-card-content class="board-qr-content">
+              <img *ngIf="boardQrMap[board.uuid]" [src]="boardQrMap[board.uuid]" alt="QR Mesa" class="qr-img" />
+              <p class="qr-uuid">{{ board.uuid | slice:0:12 }}...</p>
+              <div class="board-actions">
+                <ion-button fill="outline" size="small" (click)="openQrDetail(board)">
+                  <ion-icon slot="start" name="qr-code-outline"></ion-icon>
+                  Ver QR
+                </ion-button>
+                <ion-button fill="clear" color="danger" size="small" (click)="confirmDelete(board)">
+                  <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+                </ion-button>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+  </ng-container>
+
+  <!-- FAB Nueva Mesa -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="openNewBoardModal()" color="primary">
+      <ion-icon name="add-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <!-- Modal: Nueva Mesa -->
+  <ion-modal [isOpen]="showModal" (ionModalDidDismiss)="showModal = false">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Nueva Mesa</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="showModal = false">Cerrar</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <ion-list>
+          <ion-item>
+            <ion-label position="stacked">Nombre / Descripción</ion-label>
+            <ion-input [(ngModel)]="newDescripcion" placeholder="Ej: Mesa Terraza, Mesa VIP..."></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="stacked">Número de mesa</ion-label>
+            <ion-input type="number" [(ngModel)]="newSlot" placeholder="Ej: 1, 2, 3..."></ion-input>
+          </ion-item>
+        </ion-list>
+        <ion-button expand="block" class="ion-margin-top" [disabled]="saving || !newDescripcion || !newSlot" (click)="saveBoard()">
+          <ion-spinner *ngIf="saving" name="crescent" slot="start"></ion-spinner>
+          Crear Mesa
+        </ion-button>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <!-- Modal: Ver QR en grande -->
+  <ion-modal [isOpen]="showQrModal" (ionModalDidDismiss)="showQrModal = false">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>{{ selectedBoard?.descripcion }}</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="showQrModal = false">Cerrar</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding qr-detail-content">
+        <p class="slot-badge">Mesa {{ selectedBoard?.slot }}</p>
+        <img [src]="selectedQrDataUrl" alt="QR" class="qr-img-xl" />
+        <p class="qr-hint">Escaneo 2 — Identifica la mesa</p>
+        <ion-button expand="block" fill="outline" (click)="downloadQr(selectedBoard?.descripcion || 'mesa', selectedQrDataUrl)">
+          <ion-icon slot="start" name="download-outline"></ion-icon>
+          Descargar QR
+        </ion-button>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+</ion-content>
+

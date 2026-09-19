@@ -1,0 +1,127 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Pedidos</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="load()">
+        <ion-icon slot="icon-only" name="receipt-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Filtros -->
+  <div class="filter-wrap">
+    <ion-segment [(ngModel)]="filter" scrollable>
+      <ion-segment-button value="active">
+        <ion-label>Activos</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="pending">
+        <ion-label>Pendientes</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="preparing">
+        <ion-label>En cocina</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="ready">
+        <ion-label>Listos</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="done">
+        <ion-label>Finalizados</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </div>
+
+  @if (isLoading) {
+    <div class="loading-state">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Cargando pedidos...</p>
+    </div>
+  }
+
+  @if (!isLoading && filteredOrders.length === 0) {
+    <div class="empty-state">
+      <ion-icon name="receipt-outline"></ion-icon>
+      <p>No hay pedidos en este filtro</p>
+    </div>
+  }
+
+  @if (!isLoading) {
+    <div class="orders-list">
+      @for (order of filteredOrders; track order.uuid) {
+        <ion-card class="order-card" [class]="'status-' + order.status">
+          <ion-card-header>
+            <div class="order-header">
+              <div class="order-meta">
+                <span class="board-name">
+                  <ion-icon name="restaurant-outline"></ion-icon>
+                  {{ getBoardName(order.boardUuid) }}
+                </span>
+                <ion-note class="order-time">{{ formatDate(order.createdAt) }}</ion-note>
+              </div>
+              <div class="order-badges">
+                <ion-badge [color]="STATUS_COLORS[order.status]">
+                  <ion-icon [name]="getStatusIcon(order.status)"></ion-icon>
+                  {{ STATUS_LABELS[order.status] }}
+                </ion-badge>
+                @if (order.source === 'staff') {
+                  <ion-badge color="medium" class="source-badge">Mesero</ion-badge>
+                } @else {
+                  <ion-badge color="light" class="source-badge">Cliente</ion-badge>
+                }
+              </div>
+            </div>
+          </ion-card-header>
+
+          <ion-card-content>
+            <!-- Items del pedido -->
+            <ion-list lines="none" class="items-list">
+              @for (item of order.items; track item.productId) {
+                <ion-item class="order-item">
+                  <ion-badge slot="start" color="primary" class="qty-badge">{{ item.cantidad }}x</ion-badge>
+                  <ion-label>
+                    <span class="item-name">{{ item.nombre }}</span>
+                  </ion-label>
+                  <ion-note slot="end">{{ item.total | currency:'MXN':'symbol':'1.2-2' }}</ion-note>
+                </ion-item>
+              }
+            </ion-list>
+
+            @if (order.notas) {
+              <div class="notas">
+                <ion-icon name="alert-circle-outline"></ion-icon>
+                {{ order.notas }}
+              </div>
+            }
+
+            <div class="order-total">
+              Total: <strong>{{ order.total | currency:'MXN':'symbol':'1.2-2' }}</strong>
+            </div>
+
+            <!-- Acciones de estado -->
+            @if (getActions(order.status).length > 0) {
+              <div class="actions">
+                @for (action of getActions(order.status); track action.next) {
+                  <ion-button
+                    [color]="action.next === 'cancelled' ? 'danger' : 'primary'"
+                    [fill]="action.next === 'cancelled' ? 'outline' : 'solid'"
+                    size="small"
+                    [disabled]="updatingUuid === order.uuid"
+                    (click)="updateStatus(order, action.next)">
+                    @if (updatingUuid === order.uuid) {
+                      <ion-spinner name="crescent" slot="start"></ion-spinner>
+                    }
+                    {{ action.label }}
+                  </ion-button>
+                }
+              </div>
+            }
+          </ion-card-content>
+        </ion-card>
+      }
+    </div>
+  }
+</ion-content>

@@ -1,0 +1,68 @@
+<ion-header>
+  <ion-toolbar color="dark">
+    <ion-title>Cocina</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-refresher slot="fixed" (ionRefresh)="loadOrders($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  @if (isLoading && orders.length === 0) {
+    <div class="loading-state">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Cargando órdenes...</p>
+    </div>
+  }
+
+  @for (status of statusGroups; track status) {
+    @let ordersForStatus = getOrdersByStatus(status);
+    @if (ordersForStatus.length > 0) {
+      <section class="status-group">
+        <ion-badge [color]="statusColors[status]">
+          {{ statusLabels[status] }} ({{ ordersForStatus.length }})
+        </ion-badge>
+
+        @for (order of ordersForStatus; track order.uuid) {
+          <ion-card>
+            <ion-card-header>
+              <ion-card-title>
+                Mesa: {{ order.boardUuid | slice:0:8 }}
+                <ion-badge [color]="statusColors[order.status]" class="status-badge">
+                  {{ statusLabels[order.status] }}
+                </ion-badge>
+              </ion-card-title>
+              <p>{{ order.createdAt | date:'HH:mm' }}</p>
+            </ion-card-header>
+            <ion-card-content>
+              @for (item of order.items; track item.productId) {
+                <p>{{ item.cantidad }}x {{ item.nombre }}</p>
+              }
+              @if (order.notas) {
+                <p class="notes">
+                  <ion-icon name="chatbubble-outline"></ion-icon>
+                  {{ order.notas }}
+                </p>
+              }
+              @let action = getNextAction(order);
+              @if (action && canUpdateOrders) {
+                <ion-button
+                  expand="block"
+                  [color]="statusColors[action.nextStatus]"
+                  (click)="updateStatus(order, action.nextStatus)"
+                >
+                  {{ action.label }}
+                </ion-button>
+              }
+            </ion-card-content>
+          </ion-card>
+        }
+      </section>
+    }
+  }
+
+  @if (!isLoading && orders.length === 0) {
+    <div class="empty-state">No hay órdenes activas en este momento.</div>
+  }
+</ion-content>

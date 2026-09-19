@@ -1,0 +1,68 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Códigos QR</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- QR del Restaurante -->
+  <p class="section-label">
+    <ion-icon name="home-outline"></ion-icon>
+    QR del Restaurante
+  </p>
+
+  <ion-card class="qr-card local-card">
+    <ion-card-header>
+      <ion-card-title>Restaurante</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="qr-wrapper">
+        <img [src]="localQrUrl" alt="QR Local" />
+      </div>
+      <p class="uuid-text">{{ localUuid }}</p>
+      <ion-button expand="block" fill="outline" (click)="downloadQr(localUuid, 'qr-restaurante.png')">
+        <ion-icon name="download-outline" slot="start"></ion-icon>
+        Descargar QR
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- QRs por mesa -->
+  <p class="section-label">
+    <ion-icon name="qr-code-outline"></ion-icon>
+    QRs de Mesas ({{ boards.length }})
+  </p>
+
+  <div class="spinner-container" *ngIf="loading">
+    <ion-spinner name="crescent"></ion-spinner>
+  </div>
+
+  <div class="empty-state" *ngIf="!loading && boards.length === 0">
+    <ion-icon name="qr-code-outline"></ion-icon>
+    <p>No hay mesas configuradas.<br>Créalas en la pestaña <strong>Mesas</strong>.</p>
+  </div>
+
+  <div class="boards-grid" *ngIf="!loading && boards.length > 0">
+    <ion-card class="qr-card" *ngFor="let board of boards">
+      <ion-card-header>
+        <ion-card-title>{{ board.descripcion || 'Mesa ' + board.slot }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="qr-wrapper">
+          <img [src]="buildQrUrl(board.uuid)" alt="QR Mesa" />
+        </div>
+        <p class="uuid-text">Mesa {{ board.slot }}</p>
+        <ion-button expand="block" fill="outline" size="small"
+          (click)="downloadQr(board.uuid, 'qr-mesa-' + board.slot + '.png')">
+          <ion-icon name="download-outline" slot="start"></ion-icon>
+          Descargar
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>
+

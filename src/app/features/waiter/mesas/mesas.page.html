@@ -1,0 +1,79 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Mesas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="loadBoards($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  @if (isLoading) {
+    <ion-grid>
+      <ion-row>
+        @for (s of skeletons; track $index) {
+          <ion-col size="6">
+            <ion-card class="board-card skeleton-card">
+              <ion-card-header>
+                <ion-skeleton-text [animated]="true" style="width: 60%; height: 20px;"></ion-skeleton-text>
+                <ion-skeleton-text [animated]="true" style="width: 40%; height: 16px; margin-top: 8px;"></ion-skeleton-text>
+              </ion-card-header>
+            </ion-card>
+          </ion-col>
+        }
+      </ion-row>
+    </ion-grid>
+  } @else if (boardItems.length === 0) {
+    <div class="empty-state">
+      <div class="empty-icon">🍽️</div>
+      <p>No hay mesas disponibles</p>
+    </div>
+  } @else {
+    <ion-grid>
+      <ion-row>
+        @for (item of boardItems; track item.board.uuid) {
+          <ion-col size="6">
+            <ion-card class="board-card" [class.active]="isActive(item)" (click)="navigateToPedidos(item)">
+              <ion-card-header>
+                <ion-card-title>{{ getBoardLabel(item) }}</ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                <ion-badge [color]="isActive(item) ? 'success' : 'medium'">
+                  {{ isActive(item) ? 'Activa' : 'Libre' }}
+                </ion-badge>
+                @if (isActive(item) && item.session?.memberCount) {
+                  <p class="member-count">{{ item.session!.memberCount }} persona(s)</p>
+                }
+                @if (isActive(item)) {
+                  <ion-button
+                    expand="block"
+                    size="small"
+                    color="primary"
+                    fill="solid"
+                    class="nuevo-pedido-btn"
+                    (click)="openNuevoPedido($event, item)"
+                  >
+                    <ion-icon name="add-circle-outline" slot="start"></ion-icon>
+                    Nuevo Pedido
+                  </ion-button>
+                  <ion-button
+                    expand="block"
+                    size="small"
+                    color="danger"
+                    fill="outline"
+                    class="cerrar-mesa-btn"
+                    (click)="closeSession($event, item)"
+                  >
+                    <ion-icon name="close-circle-outline" slot="start"></ion-icon>
+                    Cerrar mesa
+                  </ion-button>
+                }
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        }
+      </ion-row>
+    </ion-grid>
+  }
+</ion-content>

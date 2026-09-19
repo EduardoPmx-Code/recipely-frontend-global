@@ -1,0 +1,19 @@
+.loading-state,
+.empty-state {
+  padding: 3rem 1rem;
+  text-align: center;
+}
+
+.status-group {
+  margin-bottom: 1.5rem;
+}
+
+.status-badge {
+  float: right;
+}
+
+.notes {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+}

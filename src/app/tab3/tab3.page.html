@@ -1,0 +1,96 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title>Productos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="loadProducts($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  @if (isLoading) {
+    <ion-list>
+      @for (item of [1,2,3,4]; track item) {
+        <ion-item>
+          <ion-label>
+            <ion-skeleton-text animated style="width:60%"></ion-skeleton-text>
+            <ion-skeleton-text animated style="width:40%"></ion-skeleton-text>
+          </ion-label>
+        </ion-item>
+      }
+    </ion-list>
+  } @else if (products.length === 0) {
+    <div class="empty-state">
+      <p>No hay productos. Agrega el primero.</p>
+    </div>
+  } @else {
+    <ion-list>
+      @for (product of products; track product.uuid) {
+        <ion-item>
+          <ion-label>
+            <h2>{{ product.name }}</h2>
+            @if (product.description) {
+              <p>{{ product.description }}</p>
+            }
+            @if (product.category) {
+              <p>Categoría: {{ product.category }}</p>
+            }
+          </ion-label>
+          <ion-badge slot="end" color="success">${{ product.price | number:'1.2-2' }}</ion-badge>
+          <ion-button slot="end" fill="clear" (click)="openEdit(product)">
+            <ion-icon name="create-outline"></ion-icon>
+          </ion-button>
+          <ion-button slot="end" fill="clear" color="danger" (click)="confirmDelete(product)">
+            <ion-icon name="trash-outline"></ion-icon>
+          </ion-button>
+        </ion-item>
+      }
+    </ion-list>
+  }
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button color="primary" (click)="openCreate()">
+      <ion-icon name="add-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
+
+<ion-modal [isOpen]="showForm" (ionModalDidDismiss)="closeForm()">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>{{ editingProduct ? 'Editar' : 'Nuevo' }} Producto</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="closeForm()">
+            <ion-icon name="close-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <ion-item>
+        <ion-label position="stacked">Nombre *</ion-label>
+        <ion-input [(ngModel)]="form.name" placeholder="Ej. Hamburguesa clásica"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Descripción</ion-label>
+        <ion-textarea [(ngModel)]="form.description" rows="2" placeholder="Descripción opcional"></ion-textarea>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Precio *</ion-label>
+        <ion-input type="number" [(ngModel)]="form.price" placeholder="0.00"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Categoría</ion-label>
+        <ion-input [(ngModel)]="form.category" placeholder="Ej. Bebidas, Platos principales"></ion-input>
+      </ion-item>
+      <div class="ion-padding">
+        <ion-button expand="block" color="primary" (click)="saveProduct()" [disabled]="!form.name || form.price <= 0">
+          <ion-icon name="checkmark-outline" slot="start"></ion-icon>
+          {{ editingProduct ? 'Actualizar' : 'Crear' }}
+        </ion-button>
+      </div>
+    </ion-content>
+  </ng-template>
+</ion-modal>

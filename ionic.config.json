@@ -1,0 +1,7 @@
+{
+  "name": "global-restaurant",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}

@@ -1,0 +1,80 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    @if (boardUuid) {
+      <ion-buttons slot="start">
+        <ion-back-button defaultHref="/tabs/waiter/mesas"></ion-back-button>
+      </ion-buttons>
+    }
+    <ion-title>{{ pageTitle }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="loadOrders($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  @if (isLoading) {
+    @for (s of skeletons; track $index) {
+      <ion-card class="order-card">
+        <ion-card-header>
+          <ion-skeleton-text [animated]="true" style="width: 50%; height: 18px;"></ion-skeleton-text>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-skeleton-text [animated]="true" style="width: 100%; height: 14px;"></ion-skeleton-text>
+          <ion-skeleton-text [animated]="true" style="width: 80%; height: 14px; margin-top: 6px;"></ion-skeleton-text>
+          <ion-skeleton-text [animated]="true" style="width: 60%; height: 36px; margin-top: 12px; border-radius: 8px;"></ion-skeleton-text>
+        </ion-card-content>
+      </ion-card>
+    }
+  } @else if (orders.length === 0) {
+    <div class="empty-state">
+      <div class="empty-icon">🧾</div>
+      <p>No hay pedidos</p>
+    </div>
+  } @else {
+    @for (order of orders; track order.uuid) {
+      <ion-card class="order-card">
+        <ion-card-header>
+          <div class="order-header">
+            <ion-card-title class="order-id">Pedido #{{ order.uuid.slice(-6).toUpperCase() }}</ion-card-title>
+            <ion-badge [color]="getStatusColor(order.status)">
+              {{ getStatusLabel(order.status) }}
+            </ion-badge>
+          </div>
+        </ion-card-header>
+
+        <ion-card-content>
+          <ion-list lines="none" class="items-list">
+            @for (item of order.items; track $index) {
+              <ion-item class="order-item">
+                <ion-label>
+                  <span class="item-qty">{{ item.cantidad }}x</span>
+                  {{ item.nombre }}
+                </ion-label>
+                @if (item.notas) {
+                  <ion-note slot="end" color="medium">{{ item.notas }}</ion-note>
+                }
+              </ion-item>
+            }
+          </ion-list>
+
+          @if (order.status !== 'delivered') {
+            <div class="action-buttons">
+              @for (action of getNextActions(order.status); track action.nextStatus) {
+                <ion-button
+                  expand="block"
+                  [color]="action.color"
+                  fill="solid"
+                  (click)="updateStatus(order, action.nextStatus)"
+                >
+                  {{ action.label }}
+                </ion-button>
+              }
+            </div>
+          }
+        </ion-card-content>
+      </ion-card>
+    }
+  }
+</ion-content>

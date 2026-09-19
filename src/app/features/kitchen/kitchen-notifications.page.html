@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-toolbar color="dark">
+    <ion-title>Notificaciones de cocina</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="notifications.clear()" aria-label="Limpiar notificaciones">
+        <ion-icon name="trash-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  @let items = (notifications.all$ | async) ?? [];
+  @if (items.length === 0) {
+    <div class="ion-padding ion-text-center">
+      <ion-icon name="notifications-outline"></ion-icon>
+      <p>Sin notificaciones por ahora.</p>
+    </div>
+  } @else {
+    <ion-list>
+      @for (item of items; track item.id) {
+        <ion-item [class.unread]="!item.read" lines="full">
+          <ion-icon slot="start" [name]="getIcon(item)" [color]="getColor(item)"></ion-icon>
+          <ion-label class="ion-text-wrap">
+            <p>{{ item.message }}</p>
+            <ion-note>{{ item.timestamp | date:'dd/MM/yyyy HH:mm:ss' }}</ion-note>
+          </ion-label>
+          @if (!item.read) {
+            <ion-badge slot="end" color="danger">•</ion-badge>
+          }
+        </ion-item>
+      }
+    </ion-list>
+  }
+</ion-content>

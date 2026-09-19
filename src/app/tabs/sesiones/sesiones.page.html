@@ -1,0 +1,91 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Mesas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-segment [(ngModel)]="filter" class="segment-filter">
+    <ion-segment-button value="all">Todas</ion-segment-button>
+    <ion-segment-button value="OPEN">Activas</ion-segment-button>
+    <ion-segment-button value="CLOSED">Cerradas</ion-segment-button>
+  </ion-segment>
+
+  @if (tableGroups.length === 0) {
+    <div class="empty-state">
+      <ion-icon name="restaurant-outline"></ion-icon>
+      <p>No hay mesas en esta categoría</p>
+    </div>
+  } @else {
+    <div class="tables-container">
+      @for (group of tableGroups; track group.boardIdentifier) {
+        <ion-card [class.active-table]="!!group.openSession">
+          <ion-card-header>
+            <div class="table-header">
+              <div class="table-title">
+                <ion-icon name="restaurant-outline" class="table-icon"></ion-icon>
+                <ion-card-title>{{ group.boardIdentifier }}</ion-card-title>
+              </div>
+              @if (group.openSession) {
+                <ion-chip color="success" class="status-chip">
+                  <ion-icon name="people-outline"></ion-icon>
+                  Activa · {{ group.openSession.membersCount ?? 0 }} personas
+                </ion-chip>
+              } @else {
+                <ion-chip color="medium" class="status-chip">Sin sesión activa</ion-chip>
+              }
+            </div>
+          </ion-card-header>
+
+          <ion-card-content>
+            <!-- Sesión activa -->
+            @if (group.openSession) {
+              <div class="active-session">
+                <div class="session-info">
+                  <ion-icon name="time-outline"></ion-icon>
+                  <ion-note>Abierta: {{ formatDate(group.openSession.createdAt) }}</ion-note>
+                </div>
+                <ion-button
+                  color="danger"
+                  fill="outline"
+                  size="small"
+                  (click)="confirmClose(group.openSession)"
+                >
+                  <ion-icon name="close-circle-outline" slot="start"></ion-icon>
+                  Cerrar sesión
+                </ion-button>
+              </div>
+            }
+
+            <!-- Historial de sesiones cerradas -->
+            @if (group.closedSessions.length > 0) {
+              <div class="history-section">
+                <button class="history-toggle" (click)="toggleHistory(group)">
+                  <span>{{ group.closedSessions.length }} sesión{{ group.closedSessions.length !== 1 ? 'es' : '' }} cerrada{{ group.closedSessions.length !== 1 ? 's' : '' }}</span>
+                  <ion-icon name="chevron-down-outline" [class.rotated]="group.showHistory"></ion-icon>
+                </button>
+                @if (group.showHistory) {
+                  <ion-list lines="none" class="history-list">
+                    @for (s of group.closedSessions; track s.uuid) {
+                      <ion-item class="history-item">
+                        <ion-label>
+                          <p>{{ formatDate(s.createdAt) }}</p>
+                        </ion-label>
+                        <ion-note slot="end">{{ s.membersCount ?? 0 }} personas</ion-note>
+                        <ion-badge slot="end" color="medium">Cerrada</ion-badge>
+                      </ion-item>
+                    }
+                  </ion-list>
+                }
+              </div>
+            }
+          </ion-card-content>
+        </ion-card>
+      }
+    </div>
+  }
+</ion-content>
