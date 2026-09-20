@@ -18,9 +18,17 @@ const getWaiterApiUrl = (): string => {
   throw new Error('WAITER_API_URL not configured');
 };
 
+const getWsUrl = (): string => {
+  if (typeof window !== 'undefined' && (window as any).__ENV__?.WS_URL) {
+    return (window as any).__ENV__.WS_URL;
+  }
+  return typeof window !== 'undefined' ? window.location.origin : '';
+};
+
 export const environment = {
   production: true,
   apiUrl: getApiUrl(),
   waiterApiUrl: getWaiterApiUrl(),
+  wsUrl: getWsUrl(),
   enableLogging: false,
 };

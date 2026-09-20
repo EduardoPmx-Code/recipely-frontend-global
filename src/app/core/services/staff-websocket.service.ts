@@ -1,6 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
+import { environment } from '../../../environments/environment';
 
 export interface StaffOrderEvent {
   orderUuid: string;
@@ -45,7 +46,7 @@ export class StaffWebsocketService implements OnDestroy {
     this.socket?.disconnect();
     const token = localStorage.getItem('staff_access_token');
     if (!token) return;
-    this.socket = io(`${window.location.origin}/ws`, {
+    this.socket = io(`${environment.wsUrl}/ws`, {
       path: '/socket.io',
       auth: { token },
       transports: ['websocket', 'polling'],

@@ -12,9 +12,17 @@ const getWaiterApiUrl = (): string => {
   return 'http://localhost:3002/api/';
 };
 
+const getWsUrl = (): string => {
+  if (typeof window !== 'undefined' && (window as any).__ENV__?.WS_URL) {
+    return (window as any).__ENV__.WS_URL;
+  }
+  return typeof window !== 'undefined' ? window.location.origin : '';
+};
+
 export const environment = {
   production: false,
   apiUrl: getApiUrl(),
   waiterApiUrl: getWaiterApiUrl(),
+  wsUrl: getWsUrl(),
   enableLogging: true,
 };

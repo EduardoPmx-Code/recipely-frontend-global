@@ -2,6 +2,9 @@ substitutions:
   _REGION: 'southamerica-east1'
   _REPOSITORY: 'manager-agent-resto-repository'
   _SERVICE_NAME: 'frontend-global-restaurante'
+  _API_URL: 'https://api-backend-restaurant-172370581837.southamerica-east1.run.app/api/'
+  _WAITER_API_URL: 'https://mesero-api-172370581837.southamerica-east1.run.app/api/'
+  _WS_URL: 'https://api-cliente-qr-172370581837.southamerica-east1.run.app'
 
 steps:
   # Build de la imagen
@@ -36,6 +39,7 @@ steps:
       - '--platform=managed'
       - '--allow-unauthenticated'
       - '--port=80'
+      - '--update-env-vars=API_URL=${_API_URL},WAITER_API_URL=${_WAITER_API_URL},WS_URL=${_WS_URL}'
     waitFor: ['push']
 
 images:
