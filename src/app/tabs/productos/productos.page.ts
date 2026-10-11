@@ -82,7 +82,7 @@ export class ProductosPage {
       next: async (res) => {
         this.isSyncing = false;
         const t = await this.toastCtrl.create({
-          message: `Menú sincronizado — ${res.chunks} fragmentos indexados`,
+          message: `Menú sincronizado — ${res.chunks} productos indexados`,
           duration: 3000,
           color: 'success',
         });
